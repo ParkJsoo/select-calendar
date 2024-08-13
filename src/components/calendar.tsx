@@ -29,12 +29,18 @@ const Calendar = () => {
     setCurrentMonth(today.withDayOfMonth(1));
   };
 
-  const toggleDateSelection = (date: LocalDate) => {
+  const handleSelect = (e) => {
 
-    if (selectedDates.some((selectedDate: LocalDate) => selectedDate.equals(date))) {
-      setSelectedDates(selectedDates.filter(selectedDate => !selectedDate.equals(date)));
-    } else {
-      setSelectedDates([...selectedDates, date]);
+    console.log({added: e.added, removed: e.removed, startAdded: e.startAdded, startRemoved: e.startRemoved, startSelected: e.startSelected});
+
+    if (e.added.length > 0 && e.removed.length < 1) {
+      setSelectedDates([...e.startAdded.map(el => LocalDate.parse(el.id)), ...e.startSelected.map(el => LocalDate.parse(el.id))]);
+    }
+
+    if (e.removed.length > 0 && e.added.length < 1) {
+      const removeDates: LocalDate[] = e.startRemoved.map(el => LocalDate.parse(el.id));
+
+      setSelectedDates(prevState => prevState.filter((selectedDate: LocalDate) => !removeDates.some((removeDate: LocalDate) => selectedDate.equals(removeDate))));
     }
   };
 
@@ -56,7 +62,7 @@ const Calendar = () => {
       days.push(
         <div key={`prev-${day}`}
              id={date.toString()}
-             className={`day ${isSelected ? 'selected' : ''} ${date.dayOfWeek().value() === 6 ? 'blue' : ''} ${date.dayOfWeek().value() === 7 ? 'red' : ''}`}>
+             className={`${styles.day} ${isSelected ? styles.selected : ''} ${date.dayOfWeek().value() === 6 ? styles.blue : ''} ${date.dayOfWeek().value() === 7 ? styles.red : ''}`}>
           {day}
         </div>
       );
@@ -71,7 +77,7 @@ const Calendar = () => {
       days.push(
         <div key={day}
              id={date.toString()}
-             className={`day ${isSelected ? 'selected' : ''} ${date.dayOfWeek().value() === 6 ? 'blue' : ''} ${date.dayOfWeek().value() === 7 ? 'red' : ''}`}>
+             className={`${styles.day} ${isSelected ? styles.selected : ''} ${date.dayOfWeek().value() === 6 ? styles.blue : ''} ${date.dayOfWeek().value() === 7 ? styles.red : ''}`}>
           {prevMonthDaysToShow > 0 && day === 1 ? `${currentMonth.monthValue()}/${day}` : day}
         </div>
       );
@@ -91,7 +97,7 @@ const Calendar = () => {
       days.push(
         <div key={`next-${day}`}
              id={date.toString()}
-             className={`day ${isSelected ? 'selected' : ''} ${date.dayOfWeek().value() === 6 ? 'blue' : ''} ${date.dayOfWeek().value() === 7 ? 'red' : ''}`}>
+             className={`${styles.day} ${isSelected ? styles.selected : ''} ${date.dayOfWeek().value() === 6 ? styles.blue : ''} ${date.dayOfWeek().value() === 7 ? styles.red : ''}`}>
           {nextMonthDaysToShow > 0 && day === 1 ? `${nextMonth.monthValue()}/${day}` : day}
         </div>
       );
@@ -101,48 +107,45 @@ const Calendar = () => {
   };
 
   return (
-    <div className={'Calendar'}>
-      <div className={'header'}>
+    <div className={styles.Calendar}>
+      <div className={styles.header}>
         <div>
           {`${currentMonth.year()}.${currentMonth.monthValue()}`}
         </div>
 
-        <button onClick={handlePrevMonth}>Prev</button>
-        <button onClick={handleToday}>오늘</button>
-        <button onClick={handleNextMonth}>Next</button>
+        <div className={styles.buttonWrap}>
+          <button onClick={handlePrevMonth}>Prev</button>
+          <button onClick={handleToday}>오늘</button>
+          <button onClick={handleNextMonth}>Next</button>
+        </div>
       </div>
 
-      <div className={'weekdays'}>
+      <div className={styles.weekdays}>
         {['일', '월', '화', '수', '목', '금', '토'].map((day) => (
-          <div key={day}
-               className={`'weekday ${day === '일' ? 'red' : ''} ${day === '토' ? 'blue' : ''}`}>
+          <div key={day} className={`${styles.weekday} ${day === '일' ? styles.red : ''} ${day === '토' ? styles.blue : ''}`}>
             {day}
           </div>
         ))}
       </div>
 
-      <Selecto
-        dragContainer={'.days'}
-        selectableTargets={['.day']}
-        onSelect={e => {
-          console.log(e);
-
-          e.added.forEach(el => {
-            el.classList.add('selected');
-          });
-          e.removed.forEach(el => {
-            el.classList.remove('selected');
-          });
-        }}
-        hitRate={0}
-        selectByClick={true}
-        selectFromInside={true}
-        continueSelect={true}
-        continueSelectWithoutDeselect={false}
-        ratio={0}
-      ></Selecto>
-      <div className={'days'}>
+      <Selecto dragContainer={`.${styles.days}`}
+               selectableTargets={[`.${styles.day}`]}
+               onSelect={handleSelect}
+               hitRate={0}
+               selectByClick={true}
+               selectFromInside={true}
+               continueSelect={true}
+               continueSelectWithoutDeselect={false}
+               ratio={0} />
+      <div className={styles.days}>
         {renderDays()}
+      </div>
+
+      <div>
+        {selectedDates.length}
+      </div>
+      <div>
+        {selectedDates.map((selectedDate: LocalDate) => `${selectedDate.monthValue()}.${selectedDate.dayOfMonth()}, `)}
       </div>
     </div>
   );

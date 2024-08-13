@@ -1,17 +1,19 @@
 .Calendar {
-  width: 300px;
+  width: 500px;
   margin: 0 auto;
   text-align: center;
 
   .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
   }
 
   .weekdays {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
 
     .weekday {
       border: 1px solid #ddd;
@@ -26,25 +28,27 @@
     .day {
       border: 1px solid #ddd;
       cursor: pointer;
-      width: 50px;
       height: 50px;
     }
   }
-}
 
-.red {
-  background: #FBDDDC;
-}
+  :global {
 
-.blue {
-  background: #E5F0FF;
-}
+    .selecto-selection {
+      border: none !important;
+      background: transparent !important;
+    }
+  }
 
-.day.selected {
-  background-color: #a0e7e5;
-}
+  .red {
+    background: #FBDDDC;
+  }
 
-.selecto-selection {
-  border: none !important;
-  background: transparent !important;
+  .blue {
+    background: #E5F0FF;
+  }
+
+  .selected {
+    background-color: #a0e7e5;
+  }
 }
