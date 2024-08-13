@@ -1,0 +1,50 @@
+.Calendar {
+  width: 300px;
+  margin: 0 auto;
+  text-align: center;
+
+  .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+  }
+
+  .weekdays {
+    display: flex;
+
+    .weekday {
+      border: 1px solid #ddd;
+      height: 30px;
+    }
+  }
+
+  .days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+
+    .day {
+      border: 1px solid #ddd;
+      cursor: pointer;
+      width: 50px;
+      height: 50px;
+    }
+  }
+}
+
+.red {
+  background: #FBDDDC;
+}
+
+.blue {
+  background: #E5F0FF;
+}
+
+.day.selected {
+  background-color: #a0e7e5;
+}
+
+.selecto-selection {
+  border: none !important;
+  background: transparent !important;
+}
